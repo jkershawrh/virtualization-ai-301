@@ -2,9 +2,17 @@ name: Virtualization + AI 301 immutable images
 on:
   workflow_dispatch:
     inputs:
-      expected_sha: {description: Exact 40-character source revision, required: true, type: string}
-permissions: {contents: read, packages: write, id-token: write}
-concurrency: {group: virtualization-ai-301-release-${{ inputs.expected_sha }}, cancel-in-progress: false}
+      expected_sha:
+        description: Exact 40-character source revision
+        required: true
+        type: string
+permissions:
+  contents: read
+  packages: write
+  id-token: write
+concurrency:
+  group: virtualization-ai-301-release-${{ inputs.expected_sha }}
+  cancel-in-progress: false
 jobs:
   qualify:
     runs-on: ubuntu-24.04
