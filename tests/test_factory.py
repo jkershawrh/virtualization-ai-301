@@ -39,8 +39,9 @@ class FactoryRedTests(unittest.TestCase):
 
     def test_handoff_is_noncertifying(self):
         handoff = yaml.safe_load((ROOT / "handoff/launchpad-handoff.yaml").read_text())
-        self.assertEqual(handoff["status"], "PROPOSED_NOT_CERTIFIED")
-        self.assertTrue(all(value is False for value in handoff["authority"].values()))
+        self.assertEqual(handoff["schema_version"], "demo-story.redhat-intel.com/launchpad-handoff/v1")
+        self.assertTrue(all(value is False for value in handoff["factory_receipt"]["authority"].values()))
+        self.assertEqual(handoff["proposed_launchpad_intake"]["certification_proposal"]["max_workshop_seats"], 0)
 
     def test_fixture_source_states_are_not_live(self):
         for path in sorted((ROOT / "public/fixtures").glob("*.json")):

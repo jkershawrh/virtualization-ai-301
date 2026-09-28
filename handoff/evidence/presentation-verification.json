@@ -1,0 +1,17 @@
+{
+  "schema_version": "demo-story.redhat-intel.com/presentation-verification/v1",
+  "source_revision": "91e30a4af72bb4a15a4e5dfe2f29abb5692c698f",
+  "source_state": "REHEARSAL",
+  "checks": {
+    "factory_check": "PASS",
+    "stage_1920x1080": "PASS",
+    "laptop_1440x900": "PASS",
+    "offline_assets": "PASS",
+    "keyboard_and_presenter_controls": "PASS",
+    "presentation_showroom_separation": "PASS"
+  },
+  "live_runtime_claimed": false,
+  "launchpad_trusted_render_claimed": false,
+  "certified": false,
+  "promotion_eligible": false
+}

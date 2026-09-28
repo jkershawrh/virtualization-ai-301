@@ -1,0 +1,19 @@
+{
+  "schema_version": "demo-story.redhat-intel.com/artifact-release/v1",
+  "component": "workload",
+  "role": "governed-adapter",
+  "source_repository": "https://github.com/jkershawrh/virtualization-ai-301",
+  "source_revision": "91e30a4af72bb4a15a4e5dfe2f29abb5692c698f",
+  "workflow_run": "https://github.com/jkershawrh/virtualization-ai-301/actions/runs/36497374230",
+  "image": "ghcr.io/jkershawrh/virtualization-ai-301-adapter@sha256:6da66231992bd9db8a31cdc08b3912b7d6c797e1ed42a064c06eea686d579d07",
+  "architecture": "linux/amd64",
+  "scan": {"critical": 0, "high": 0, "medium": 6},
+  "spdx_sbom_attested": true,
+  "keyless_signature_verified": true,
+  "slsa_provenance_verified": true,
+  "exact_digest_pull_verified": true,
+  "source_label_verified": true,
+  "authoritative_release_receipt": {"path": "evidence/published-release.json", "sha256": "9ab20e8cc35f4cda8a6c55f8de1ce7490847ba473794bfc31e6d1cd9a7b6992a"},
+  "certified": false,
+  "promotion_eligible": false
+}
