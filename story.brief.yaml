@@ -1,0 +1,39 @@
+version: 1
+blueprint: demo-blueprint.yaml
+presentation:
+  title: Modernize VMs with Governed AI
+  audience: Engineers who completed level 201
+  desired_decision: Approve a lab governing identity path placement evidence refusal and human authority
+  duration_minutes: 7
+  core_tension: A valid VM-to-AI request is not yet safe to operationalize
+  cta: Close the presentation and build controls in the separate Showroom lab
+source_material:
+  mode: immutable-prerequisite-plus-focused-discovery
+  items: [virtualization-ai-201@70a35189cce95b87240734ec7961a67685d4cb27, roadshow@5d296c9 selected concepts only]
+  consequential_assumptions: [Launchpad supplies cluster model labels and identity, Factory remains REHEARSAL without runtime evidence, No benchmark migration or certification claim]
+architecture:
+  actors: [learner, reviewer]
+  boundaries: [identity-boundary, network-boundary, placement-boundary, observability-boundary, authority-boundary]
+  critical_flows: [govern-modernization, refuse-or-abstain]
+  omitted_from_main_story: [Full roadshow, migrations, benchmarks, serving internals, certification]
+beats:
+  - {beat: ordinary-world, claim: Level 201 proves a contract but not its operational evidence.}
+  - {beat: stakes, claim: Ambiguous identity path or placement can make a valid response unsafe.}
+  - {beat: reframe, claim: Modernization is earned by a governed decision record.}
+  - {beat: system-reveal, claim: Declare and observe identity network placement evidence and authority.}
+  - {beat: live-proof, claim: Complete evidence allows review while mismatches refuse and unknowns abstain.}
+  - {beat: transformation, claim: Learner can defend what is known what failed and who decides.}
+  - {beat: next-journey, claim: Launchpad independently executes measures reclaims certifies and promotes.}
+evidence:
+  - {id: governed-rehearsal, claim: Complete deterministic evidence can ALLOW_REVIEW, classification: rehearsal-fixture, source: public/fixtures/allowed.json, owner: governance contract, last_verified: "2026-09-28", treatment: Always label REHEARSAL.}
+  - {id: identity-refusal, claim: Identity mismatch REFUSEs before model use, classification: rehearsal-fixture, source: public/fixtures/identity-refused.json, owner: governance contract, last_verified: "2026-09-28", treatment: Show beside allowed.}
+  - {id: placement-abstention, claim: Missing placement evidence ABSTAINs, classification: rehearsal-fixture, source: public/fixtures/placement-unknown.json, owner: governance contract, last_verified: "2026-09-28", treatment: State absence.}
+  - {id: live-runtime, claim: Complete path ran on approved OpenShift and Intel Xeon, classification: future-state, source: No 301 receipt, owner: Launchpad, last_verified: null, treatment: Never imply live.}
+live_systems:
+  - {id: governed-adapter, endpoint: /api/v1/modernize, source_states: [LIVE, REHEARSAL, OFFLINE], timeout_ms: 3000, fallback: public/fixtures/allowed.json}
+journey:
+  presentation: 5–7 minute seven-scene causal story
+  live_demonstration: Compare allowed identity-refused and placement-unknown
+  guided_demo: Inspect policy request observations reasons metrics and authority
+  hands_on_lab: 90–120 minutes to declare observe compare refuse review and reclaim
+open_questions: [Certified platform versions, Target identity and labels, Model registry retention rollback capacity and reclaim policies]

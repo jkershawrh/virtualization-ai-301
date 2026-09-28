@@ -1,0 +1,119 @@
+version: 1
+status: reviewed
+
+source:
+  name: virtualization-ai-201
+  kind: immutable-prerequisite
+  location: https://github.com/jkershawrh/virtualization-ai-201
+  revision: 70a35189cce95b87240734ec7961a67685d4cb27
+  discovered_at: "2026-09-28"
+  supplemental:
+    name: ocp-virt-roadshow-2026-showroom
+    revision: 5d296c9c9fbe773af09c16935c78b89baebd1f81
+    selected_concepts:
+      - VM scheduling controls from module-01-intro
+      - pod-network and NetworkPolicy boundaries from module-06-networking
+      - Service label selection from module-07-workingvms
+      - utilization events and guest-agent visibility from module-01-intro
+    excluded: Full roadshow, migrations, screenshots, credentials, and environment values.
+  observations:
+    - {id: source-201-clean, status: verified, summary: Canonical 201 was clean at the pinned revision.}
+    - {id: platform-inventory, status: verified, summary: Read-only inventory observed OpenShift 4.18.16 Kubernetes 1.31.8 KubeVirt APIs and linux/amd64 server on 2026-09-28.}
+    - {id: runtime-execution, status: unknown, summary: No 301 VM network placement model or observability path was executed.}
+    - {id: node-vendor-labels, status: unknown, summary: Intel placement labels were not visible.}
+    - {id: performance, status: excluded, summary: Performance capacity cost efficiency and migration-success claims are out of scope.}
+
+intent:
+  primary_user: Engineers who completed Virtualization + AI 201 or can defend its contract.
+  workload: A governed adapter qualifies identity network placement observability and model evidence for one VM modernization request.
+  recognized_problem: A valid VM-to-AI contract remains unsafe when identity route placement evidence completeness and refusal are implicit.
+  audience_decision: Approve a 301 lab that makes those controls reviewable while preserving human authority.
+  desired_outcome: A correlated bundle whose allowed refused and abstained outcomes can be defended without autonomous action.
+
+architecture:
+  actors:
+    - {id: learner, name: Learner engineer, kind: human, responsibility: Declare policy exercise conditions inspect evidence and reclaim, status: verified}
+    - {id: reviewer, name: Named human reviewer, kind: human, responsibility: Accept or reject evidence and authorize later action, status: verified}
+  runtime_objects:
+    - {id: vm-client, name: Modernization client in VM, kind: kubevirt.io/v1 VirtualMachine workload, responsibility: Submit 201-compatible task with guest identity and correlation ID, status: verified}
+    - {id: adapter-service, name: Governed adapter Service, kind: v1 Service, responsibility: Provide the only declared namespace-local destination, status: verified}
+    - {id: network-policy, name: VM-to-adapter policy, kind: networking.k8s.io/v1 NetworkPolicy, responsibility: Express default denial and labeled launcher-to-adapter exception, status: verified}
+    - {id: policy-adapter, name: Governed decision adapter, kind: apps/v1 Deployment, responsibility: Validate evidence enforce refusal precedence isolate credentials and emit redacted records, status: verified}
+    - {id: metrics, name: Bounded metrics endpoint, kind: HTTP exposition, responsibility: Expose decision counters only and never platform performance, status: verified}
+    - {id: model-endpoint, name: Approved advisory model endpoint, kind: external OpenAI-compatible API, responsibility: Interpret a bounded note only after deterministic controls pass, status: assumed}
+  boundaries:
+    - {id: identity-boundary, kind: identity, responsibility: Compare declared guest with observed namespace VM VMI UID and service account, status: verified}
+    - {id: network-boundary, kind: network, responsibility: Compare declared destination with observed Service port policy and endpoints, status: verified}
+    - {id: placement-boundary, kind: placement, responsibility: Compare declared policy with observed node architecture and required labels, status: verified}
+    - {id: observability-boundary, kind: evidence, responsibility: Require one correlation ID timestamps observations reasons and source state, status: verified}
+    - {id: authority-boundary, kind: authority, responsibility: Reserve action certification and promotion for humans, status: verified}
+  flows:
+    - id: govern-modernization
+      name: Govern one modernization request
+      kind: request-decision-evidence
+      trigger: Learner submits a typed request and independently collected observations.
+      outcome: Adapter returns ALLOW_REVIEW REFUSE or ABSTAIN with ordered reasons and a correlated record.
+      edges:
+        - {from: vm-client, to: adapter-service, purpose: Submit bounded request through declared Service, protocol: HTTP JSON :8080, evidence_ids: [identity-receipt, network-receipt]}
+        - {from: adapter-service, to: policy-adapter, purpose: Select adapter under NetworkPolicy, protocol: Kubernetes Service, evidence_ids: [network-receipt]}
+        - {from: policy-adapter, to: model-endpoint, purpose: Request advisory interpretation only after controls pass, protocol: OpenAI-compatible HTTPS JSON, evidence_ids: [model-receipt]}
+        - {from: policy-adapter, to: reviewer, purpose: Return decision evidence and limitations, protocol: HTTP JSON, evidence_ids: [decision-record, authority-receipt]}
+    - id: refuse-or-abstain
+      name: Fail closed on mismatch or absence
+      kind: failure
+      trigger: Identity or network mismatch placement absent or mismatched correlation incomplete or model unavailable.
+      outcome: Typed REFUSE or ABSTAIN with no authorization or fabricated live claim.
+      edges:
+        - {from: policy-adapter, to: reviewer, purpose: Explain ordered reasons, protocol: HTTP JSON, evidence_ids: [failure-matrix, decision-record]}
+
+operational_pattern:
+  name: Declare, observe, compare, refuse, review, reclaim
+  rationale: Level 301 governs the 201 contract under changed conditions rather than adding another prompt.
+  steps:
+    - {id: declare, label: Declare control intent, question: "Which identity destination placement evidence and authority rules must hold?", flow_ids: [govern-modernization], evidence_ids: [policy-receipt]}
+    - {id: observe, label: Collect independent observations, question: "Which values were observed now and which remain unknown?", flow_ids: [govern-modernization], evidence_ids: [identity-receipt, network-receipt, placement-receipt]}
+    - {id: compare, label: Compare intent to observation, question: "Do all controls agree under one correlation identifier?", flow_ids: [govern-modernization], evidence_ids: [decision-record]}
+    - {id: refuse, label: Exercise refusal and abstention, question: "Does every unsafe or incomplete condition fail closed?", flow_ids: [refuse-or-abstain], evidence_ids: [failure-matrix]}
+    - {id: review, label: Preserve human authority, question: "Can reviewer accept or reject without model action?", flow_ids: [govern-modernization, refuse-or-abstain], evidence_ids: [authority-receipt]}
+    - {id: reclaim, label: Reclaim and verify, question: "Are all candidate resources absent after cleanup?", flow_ids: [govern-modernization], evidence_ids: [cleanup-receipt]}
+  changed_condition: Complete evidence changes to identity mismatch blocked destination placement uncertainty incomplete correlation or model unavailability.
+  close: Human reviewer records accept or reject; model and adapter have no action authority.
+
+evidence:
+  - {id: policy-receipt, name: Versioned policy, source: contracts/governance-policy.json, collection: Review and tests, supports: Required controls explicit, status: verified}
+  - {id: identity-receipt, name: Identity comparison, source: request observations, collection: Namespace VM VMI UID and service account, supports: Identity accepted or refused, status: verified}
+  - {id: network-receipt, name: Network comparison, source: Service NetworkPolicy and observations, collection: Destination service port policy and endpoints, supports: Only declared path qualifies, status: verified}
+  - {id: placement-receipt, name: Placement comparison, source: VMI node and labels, collection: Declared versus observed architecture and labels, supports: Placement observed not inferred, status: assumed}
+  - {id: decision-record, name: Correlated record, source: governed adapter, collection: Hash state timestamps checks and reasons, supports: Outcomes attributable, status: verified}
+  - {id: failure-matrix, name: Failure matrix, source: tests and lab, collection: Identity network placement observability and model conditions, supports: Unsafe and unknown fail closed, status: verified}
+  - {id: model-receipt, name: Model receipt, source: configured endpoint, collection: Model provider hardware source state and validation, supports: Model only when LIVE identity complete, status: assumed}
+  - {id: authority-receipt, name: Human authority, source: response and worksheet, collection: HUMAN_REVIEW_REQUIRED and prohibited actions, supports: No autonomous authority, status: verified}
+  - {id: cleanup-receipt, name: Zero-residue inventory, source: learner namespace, collection: Before and after labeled inventory, supports: Candidate reclaimed in target, status: assumed}
+
+decisions:
+  - {id: control-decision, owner: Governed adapter policy, policy: Identity or network mismatch REFUSE; missing placement or correlation ABSTAIN; model failure after controls ABSTAIN., fail_closed_behavior: No unsafe or incomplete condition returns ALLOW_REVIEW., status: verified}
+  - {id: final-decision, owner: Named human reviewer, policy: ALLOW_REVIEW permits review and never a VM change., fail_closed_behavior: Missing human acceptance remains unauthorized., status: verified}
+
+ai_assessment:
+  needed: true
+  kind: generative-llm
+  rationale: AI interprets only a bounded synthetic note after deterministic governance.
+  tasks: [Classify a bounded note, Summarize considerations for human review]
+  inputs: [Synthetic note, allowed categories, deterministic control result]
+  outputs: [category, summary, rationale, source state, model identity]
+  model_identity_source: Configured endpoint response plus runtime model configuration
+  hardware_identity_source: Independently observed approved metadata; factory fixtures say not-observed
+  evidence_access: [Synthetic note, allowed categories, passed deterministic checks]
+  action_authority: none; no tools mutations deployments migrations promotion certification or self-approval
+  validation: [LIVE requires complete model provider and hardware identity, Output satisfies schema, Pre-model failure has no advisory]
+  fallback: REHEARSAL uses labeled deterministic fixtures; OFFLINE reports absence. Neither proves live AI or platform behavior.
+  final_decision_owner: Named human reviewer
+
+story_mapping:
+  audience_question: Can the 201 contract become an operationally reviewable modernization decision without surrendering authority?
+  stakes: [Wrong caller risk, Reachability is not path governance, Placement cannot be inferred, Missing correlation is unauditable]
+  architecture_flow_ids: [govern-modernization, refuse-or-abstain]
+  live_proof_flow_ids: [govern-modernization, refuse-or-abstain]
+  comparison: Complete REHEARSAL evidence versus identity refusal and placement abstention.
+  payoff: Learner proves policy behavior and limits; factory does not certify OpenShift or Intel runtime.
+  next_journey: Independent Launchpad execution measurement reclaim certification and promotion.
