@@ -1,0 +1,30 @@
+{
+  "schema_version": "virtualization-ai.redhat-intel.com/published-release/v1",
+  "source_revision": "91e30a4af72bb4a15a4e5dfe2f29abb5692c698f",
+  "workflow_run": {
+    "id": 36497374230,
+    "url": "https://github.com/jkershawrh/virtualization-ai-301/actions/runs/36497374230",
+    "conclusion": "success"
+  },
+  "platform": "linux/amd64",
+  "components": {
+    "presentation": {
+      "image": "ghcr.io/jkershawrh/virtualization-ai-301-presentation@sha256:012c22404725b03c5c5b3d8bb3234e608da334af72762e10e158031b505506fa",
+      "scan": {"critical": 0, "high": 0, "medium": 4},
+      "sbom": "SPDX_JSON_ATTESTED",
+      "signature": "KEYLESS_OIDC_VERIFIED",
+      "provenance": "SLSA_PROVENANCE_VERIFIED",
+      "exact_digest_pull": true
+    },
+    "adapter": {
+      "image": "ghcr.io/jkershawrh/virtualization-ai-301-adapter@sha256:6da66231992bd9db8a31cdc08b3912b7d6c797e1ed42a064c06eea686d579d07",
+      "scan": {"critical": 0, "high": 0, "medium": 6},
+      "sbom": "SPDX_JSON_ATTESTED",
+      "signature": "KEYLESS_OIDC_VERIFIED",
+      "provenance": "SLSA_PROVENANCE_VERIFIED",
+      "exact_digest_pull": true
+    }
+  },
+  "launchpad_certified": false,
+  "orderable": false
+}

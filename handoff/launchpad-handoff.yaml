@@ -2,12 +2,12 @@ version: 1
 status: PROPOSED_NOT_CERTIFIED
 source:
   repository: https://github.com/jkershawrh/virtualization-ai-301
-  revision: TO_BE_FILLED_BY_RELEASE_RECEIPT
+  revision: 91e30a4af72bb4a15a4e5dfe2f29abb5692c698f
   prerequisite: https://github.com/jkershawrh/virtualization-ai-201@70a35189cce95b87240734ec7961a67685d4cb27
 candidate:
   outcome: Modernize VMs with Governed AI
-  presentation_image: TO_BE_FILLED_BY_RELEASE_RECEIPT
-  adapter_image: TO_BE_FILLED_BY_RELEASE_RECEIPT
+  presentation_image: ghcr.io/jkershawrh/virtualization-ai-301-presentation@sha256:012c22404725b03c5c5b3d8bb3234e608da334af72762e10e158031b505506fa
+  adapter_image: ghcr.io/jkershawrh/virtualization-ai-301-adapter@sha256:6da66231992bd9db8a31cdc08b3912b7d6c797e1ed42a064c06eea686d579d07
   platform: linux/amd64
   default_source_state: REHEARSAL
 authority:
