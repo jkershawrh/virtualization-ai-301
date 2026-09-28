@@ -1,0 +1,15 @@
+{
+  "version": "virtualization-ai.redhat-intel.com/governance-policy/v1",
+  "precedence": ["IDENTITY", "NETWORK", "OBSERVABILITY", "PLACEMENT", "MODEL"],
+  "outcomes": {
+    "IDENTITY_MISMATCH": "REFUSE",
+    "NETWORK_MISMATCH": "REFUSE",
+    "OBSERVABILITY_INCOMPLETE": "ABSTAIN",
+    "PLACEMENT_UNKNOWN": "ABSTAIN",
+    "PLACEMENT_MISMATCH": "REFUSE",
+    "MODEL_UNAVAILABLE": "ABSTAIN",
+    "CONTROLS_COMPLETE": "ALLOW_REVIEW"
+  },
+  "authority": "HUMAN_REVIEW_REQUIRED",
+  "prohibited_actions": ["deploy", "migrate", "restart", "scale", "promote", "certify", "approve"]
+}
