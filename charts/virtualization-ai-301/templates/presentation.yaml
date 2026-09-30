@@ -30,6 +30,6 @@ spec: {selector: {app.kubernetes.io/name: virtualization-ai-301-presentation}, p
 ---
 apiVersion: route.openshift.io/v1
 kind: Route
-metadata: {name: virtualization-ai-301, labels: {lab.redhat.com/candidate: virtualization-ai-301}}
+metadata: {name: virt301, labels: {lab.redhat.com/candidate: virtualization-ai-301}}
 spec: {to: {kind: Service, name: virtualization-ai-301-presentation}, port: {targetPort: http}, tls: {termination: edge, insecureEdgeTerminationPolicy: Redirect}}
 {{- end }}

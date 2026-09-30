@@ -30,6 +30,10 @@ class PackagingTests(unittest.TestCase):
         self.assertEqual(resources["requests"]["memory"], "64Mi")
         self.assertEqual(resources["limits"]["memory"], "256Mi")
 
+    def test_presentation_route_name_fits_launchpad_namespaces(self):
+        template = (CHART / "templates/presentation.yaml").read_text()
+        self.assertIn("metadata: {name: virt301,", template)
+
 
 if __name__ == "__main__":
     unittest.main()
