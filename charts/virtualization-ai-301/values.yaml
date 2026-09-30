@@ -8,7 +8,7 @@ adapter:
 presentation:
   enabled: true
   image: {repository: localhost/virtualization-ai-301-presentation, tag: 0.1.0, digest: "", pullPolicy: IfNotPresent}
-  resources: {requests: {cpu: 25m, memory: 32Mi}, limits: {cpu: 100m, memory: 96Mi}}
+  resources: {requests: {cpu: 25m, memory: 64Mi}, limits: {cpu: 100m, memory: 256Mi}}
 vm:
   enabled: true
   name: modernization-client

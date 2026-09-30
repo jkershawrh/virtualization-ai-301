@@ -1,6 +1,8 @@
 import unittest
 from pathlib import Path
 
+import yaml
+
 ROOT = Path(__file__).resolve().parents[1]
 CHART = ROOT / "charts/virtualization-ai-301"
 
@@ -21,6 +23,12 @@ class PackagingTests(unittest.TestCase):
             for component in ("adapter", "presentation"):
                 self.assertRegex(values[component]["image"]["digest"], r"^sha256:[0-9a-f]{64}$")
             self.assertNotIn("TO_BE_FILLED", path.read_text())
+
+    def test_presentation_has_certification_headroom(self):
+        values = yaml.safe_load((CHART / "values.yaml").read_text())
+        resources = values["presentation"]["resources"]
+        self.assertEqual(resources["requests"]["memory"], "64Mi")
+        self.assertEqual(resources["limits"]["memory"], "256Mi")
 
 
 if __name__ == "__main__":
