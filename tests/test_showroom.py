@@ -8,6 +8,16 @@ PAGES = ROOT / "showroom/content/modules/ROOT/pages"
 
 
 class ShowroomTests(unittest.TestCase):
+    def test_showroom_playbook_is_discoverable_from_the_repository_root(self):
+        """The deployed Showroom content container resolves start_path from repo root."""
+        playbook = ROOT / "default-site.yml"
+        self.assertTrue(playbook.is_file())
+        config = yaml.safe_load(playbook.read_text())
+        source = config["content"]["sources"][0]
+        self.assertEqual(source["url"], ".")
+        self.assertEqual(source["start_path"], "showroom/content")
+        self.assertTrue((ROOT / source["start_path"] / "antora.yml").is_file())
+
     def test_lab_is_separate_and_complete(self):
         expected = ["01-prerequisites.adoc", "02-declare.adoc", "03-observe.adoc", "04-compare.adoc", "05-refuse.adoc", "06-review.adoc", "07-reclaim.adoc"]
         self.assertTrue(all((PAGES / name).exists() for name in expected))
