@@ -26,6 +26,11 @@ class ShowroomTests(unittest.TestCase):
         self.assertEqual(source["url"], "/showroom/repo")
         self.assertEqual(source["start_path"], "showroom/content")
 
+    def test_antora_version_matches_showroom_runtime_path(self):
+        component = yaml.safe_load((ROOT / "showroom/content/antora.yml").read_text())
+        self.assertEqual(component["name"], "virtualization-ai-301")
+        self.assertEqual(component["version"], "main")
+
 
 if __name__ == "__main__":
     unittest.main()
