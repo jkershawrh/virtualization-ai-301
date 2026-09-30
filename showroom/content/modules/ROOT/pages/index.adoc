@@ -1,18 +1,35 @@
-= Modernize VMs with Governed AI
+= Govern a VM-to-AI modernization decision
 
-This 90–120 minute level-301 lab starts from the completed 201 VM-to-AI
-contract. You will declare identity, network, placement, observability, and
-authority policy; compare it with independent observations; exercise
-`ALLOW_REVIEW`, `REFUSE`, and `ABSTAIN`; and reclaim every candidate resource.
+An infrastructure team wants to connect an existing virtual machine to an AI
+advisor without giving the model authority over the VM or the cluster. Your
+job is to decide whether the proposed path is safe enough for a named human to
+review.
 
-The model is advisory. It cannot run tools, change the VM, migrate workloads,
-approve evidence, certify the lab, or promote artifacts. Factory fixtures are
-`REHEARSAL`; only a complete current-session target receipt may say `LIVE`.
+This 60–75 minute level-301 lab follows one decision from declared intent to a
+tamper-evident receipt. You will inspect the real namespace, compare the
+declaration with observations, call the governed adapter, force refusal and
+abstention, record a human decision, and clean up your learner artifacts.
 
-== Deliverables
+The outcome `ALLOW_REVIEW` is deliberately narrow: it means the evidence is
+complete enough for a human to review. It does *not* authorize a deployment,
+migration, promotion, or certification.
 
-* one versioned request and policy;
-* allowed, refused, abstained, and model-unavailable records;
-* bounded decision counters (not a platform benchmark);
-* a named human accept/reject worksheet; and
-* before/after resource inventories showing zero labeled residue.
+== The learning loop
+
+* *Show* — observe the VM, adapter, policy boundary, and current runtime mode.
+* *Learn* — understand why identity, network, observability, placement, and
+  model checks run in that order.
+* *Do* — submit one governed modernization request and three controlled faults.
+* *Prove* — retrieve the evidence record, verify inference provenance, record
+  human authority, and leave no learner-created residue.
+
+== Truth boundary
+
+The `/healthz` response is authoritative for this session. In `REHEARSAL`, the
+adapter uses a deterministic fixture: `source_state == "REHEARSAL"` and
+`ai_participated == false`. In `LIVE`, a successful advisory must report
+`source_state == "LIVE"` and `ai_participated == true`. Never describe a
+rehearsal response as model inference or Intel hardware proof.
+
+Your OpenShift project and the Launchpad session are provisioned for you. Do
+not uninstall the lab release; Launchpad owns full environment reclamation.

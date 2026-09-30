@@ -1,13 +1,57 @@
-= 1. Confirm evidence boundaries
+= 1. Show the governed path
 
-Verify that 201 is complete or that you can explain its VM client, Service,
-NetworkPolicy, adapter, Secret reference, evidence API, failure behavior, and
-human authority. Do not copy a 101 or 201 completion receipt as 301 work.
+== Show
 
-Record target OpenShift and OpenShift Virtualization versions, namespace,
-architecture, available node labels, storage class, ingress, egress, operator
-scope, and cleanup permissions. Classify each value as `VERIFIED`, `ASSUMED`,
-`UNKNOWN`, `EXCLUDED`, or `BLOCKED`.
+Start with the system that is actually running. The terminal is already scoped
+to your lab namespace. Capture the namespace, wait for the adapter, and create
+a local tunnel to its private Service.
 
-If a current value is absent, keep the associated claim `UNKNOWN`. Do not infer
-Intel placement from branding or a requested selector.
+[source,bash,role="execute"]
+----
+export LAB_NS="$(oc project -q)"
+export LAB_DIR="/tmp/virtualization-ai-301"
+export ADAPTER_URL="http://127.0.0.1:18080"
+mkdir -p "$LAB_DIR"
+
+oc rollout status deployment/virtualization-ai-301-adapter --timeout=180s
+oc port-forward service/virtualization-ai-301-adapter 18080:8080 \
+  >"$LAB_DIR/port-forward.log" 2>&1 &
+echo $! >"$LAB_DIR/port-forward.pid"
+
+for attempt in $(seq 1 30); do
+  curl -fsS "$ADAPTER_URL/healthz" >"$LAB_DIR/health.json" && break
+  sleep 2
+done
+jq . "$LAB_DIR/health.json"
+----
+
+The response tells you whether this seat is `REHEARSAL`, `LIVE`, or `OFFLINE`.
+It also reports whether all five live model identity fields are configured.
+
+[source,bash,role="execute"]
+----
+jq -e '
+  (.mode == "REHEARSAL" or .mode == "LIVE" or .mode == "OFFLINE") and
+  .authority == "HUMAN_REVIEW_REQUIRED"
+' "$LAB_DIR/health.json"
+----
+
+Now show the two sides of the path: the VM and the governed adapter.
+
+[source,bash,role="execute"]
+----
+oc get vm,vmi,deploy,svc,endpointslice,networkpolicy \
+  -l lab.redhat.com/candidate=virtualization-ai-301 -o wide
+oc get vm modernization-client \
+  -o custom-columns=NAME:.metadata.name,RUNNING:.status.ready,STATE:.status.printableStatus
+----
+
+If the label query is empty, the second command still proves the VM resource.
+Do not infer model participation, Intel placement, or performance from a
+`Running` pod.
+
+== Learn
+
+The model is last in the decision chain. Identity and network mismatches must
+stop before inference; incomplete observations must abstain; only a complete
+control record is eligible for an advisory.

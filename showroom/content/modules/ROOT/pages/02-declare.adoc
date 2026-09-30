@@ -1,12 +1,79 @@
-= 2. Declare control intent
+= 2. Learn the policy, then declare intent
 
-Inspect `contracts/governance-policy.json` and
-`contracts/modernization-request.schema.json`. Declare the expected namespace,
-VM, caller service account, Service and port, architecture, and required labels.
+== Learn
 
-Keep credentials out of the request. A live model credential belongs only in a
-runtime Secret referenced by the adapter Deployment. The VM, presentation,
-fixtures, evidence, and source must contain no credential value.
+The governed adapter evaluates controls in this order:
 
-Explain the order: identity → network → observability → placement → model.
-Identity and network mismatches `REFUSE`; missing observations `ABSTAIN`.
+`identity → network → observability → placement → model`
+
+That order is a safety property. A model cannot explain away the wrong caller,
+an unapproved network path, or missing evidence.
+
+Inspect the policy embedded in the running adapter image and the Kubernetes
+objects that enforce the service boundary.
+
+[source,bash,role="execute"]
+----
+oc exec deployment/virtualization-ai-301-adapter -- \
+  python3 -c 'import json; from workload.app import POLICY; print(json.dumps(POLICY, indent=2))'
+oc get networkpolicy adapter-default-deny allow-declared-adapter-path -o yaml \
+  | sed -n '1,220p'
+----
+
+== Do
+
+Create a versioned request. The namespace, VM identity, VMI UID, endpoint
+readiness, and correlation ID come from this seat. Because a participant is not
+allowed to read cluster Nodes, architecture and Intel vendor labels remain
+representative policy values. That limitation is why the default adapter mode
+is `REHEARSAL`.
+
+[source,bash,role="execute"]
+----
+export VM_NAME="modernization-client"
+export VMI_UID="$(oc get vmi "$VM_NAME" -o jsonpath='{.metadata.uid}')"
+export CORRELATION_ID="$(python3 -c 'import uuid; print(uuid.uuid4())')"
+
+oc get endpointslice -l kubernetes.io/service-name=virtualization-ai-301-adapter \
+  -o jsonpath='{range .items[*].endpoints[*]}{.conditions.ready}{"\n"}{end}' \
+  | grep -qx true
+
+jq -n \
+  --arg ns "$LAB_NS" \
+  --arg vm "$VM_NAME" \
+  --arg uid "$VMI_UID" \
+  --arg correlation "$CORRELATION_ID" \
+  --arg collected "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
+  '{
+    schema_version:"virtualization-ai.redhat-intel.com/modernization-request/v1",
+    correlation_id:$correlation,
+    task:"review-vm-modernization",
+    note:"Review this VM-to-AI service path without authorizing a change.",
+    allowed_categories:["identity","connectivity","placement","operations","unknown"],
+    declared:{
+      identity:{namespace:$ns,vm_name:$vm,service_account:"vm-modernization-client"},
+      destination:{service:"virtualization-ai-301-adapter",port:8080},
+      placement:{architecture:"amd64",required_labels:{"feature.node.kubernetes.io/cpu-model.vendor_id":"Intel"}}
+    },
+    observed:{
+      identity:{namespace:$ns,vm_name:$vm,service_account:"vm-modernization-client",vmi_uid:$uid},
+      destination:{service:"virtualization-ai-301-adapter",port:8080,network_policy:"ENFORCED",endpoints_ready:true},
+      placement:{node_name:"participant-hidden",architecture:"amd64",required_labels:{},labels:{"feature.node.kubernetes.io/cpu-model.vendor_id":"Intel"}},
+      observability:{correlation_id:$correlation,collected_at:$collected,events_available:true}
+    }
+  }' >"$LAB_DIR/request.json"
+
+jq . "$LAB_DIR/request.json"
+----
+
+== Prove
+
+Prove that the request has no embedded credential fields before it crosses the
+boundary.
+
+[source,bash,role="execute"]
+----
+! jq -e '.. | objects | keys[]? | ascii_downcase
+  | select(. == "api_key" or . == "password" or . == "secret" or . == "token" or . == "authorization")' \
+  "$LAB_DIR/request.json"
+----

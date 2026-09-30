@@ -1,13 +1,51 @@
-= 3. Collect observations
+= 3. Observe with two independent views
 
-Collect observations independently from the submitted declaration: launcher
-pod service account, VM/VMI identity and UID, Service and ready endpoints,
-NetworkPolicy, VMI node, node architecture and required labels, events, and one
-correlation identifier. Redact unrelated metadata.
+== Show
 
-The reference chart uses the pod network with masquerade, a namespace-local
-Service, default-deny adapter policy, and a labeled launcher exception. It does
-not create a secondary network or cluster-scoped object.
+Use the *OpenShift Console* tab as the visual operator view:
 
-`/metrics` exposes only in-process decision counts. Do not interpret those
-counters as VM, cluster, model, capacity, efficiency, or response-time proof.
+. Open *Virtualization → VirtualMachines* and select `modernization-client`.
+. Confirm its status and open the *VirtualMachineInstances* details for the VMI
+  identity.
+. Open *Networking → NetworkPolicies* and inspect
+  `adapter-default-deny` and `allow-declared-adapter-path`.
+. Open *Workloads → Deployments* and select
+  `virtualization-ai-301-adapter`.
+
+The Console is not decoration: it is the operator view of the same objects you
+will prove from the terminal. If the Console tab is absent, cannot authenticate,
+or shows another namespace, stop and report the seat as failed.
+
+== Do
+
+Collect a bounded terminal inventory and save it as learner evidence.
+
+[source,bash,role="execute"]
+----
+{
+  echo "namespace=$LAB_NS"
+  oc get vm "$VM_NAME" -o custom-columns=VM:.metadata.name,READY:.status.ready,STATE:.status.printableStatus
+  oc get vmi "$VM_NAME" -o custom-columns=VMI:.metadata.name,UID:.metadata.uid,NODE:.status.nodeName,PHASE:.status.phase
+  oc get service virtualization-ai-301-adapter -o custom-columns=SERVICE:.metadata.name,PORT:.spec.ports[0].port
+  oc get endpointslice -l kubernetes.io/service-name=virtualization-ai-301-adapter \
+    -o custom-columns=SLICE:.metadata.name,READY:.endpoints[*].conditions.ready
+  oc get networkpolicy adapter-default-deny allow-declared-adapter-path \
+    -o custom-columns=POLICY:.metadata.name,TYPES:.spec.policyTypes[*]
+} | tee "$LAB_DIR/runtime-inventory.txt"
+----
+
+== Learn
+
+This inventory proves namespaced identity, readiness, and policy presence. It
+does not prove processor vendor, performance, cost, capacity, or successful
+model inference. Those require separate evidence.
+
+== Prove
+
+[source,bash,role="execute"]
+----
+grep -q "modernization-client" "$LAB_DIR/runtime-inventory.txt"
+grep -q "virtualization-ai-301-adapter" "$LAB_DIR/runtime-inventory.txt"
+grep -q "adapter-default-deny" "$LAB_DIR/runtime-inventory.txt"
+grep -q "allow-declared-adapter-path" "$LAB_DIR/runtime-inventory.txt"
+----

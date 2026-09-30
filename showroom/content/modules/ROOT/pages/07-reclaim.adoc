@@ -1,14 +1,47 @@
-= 7. Reclaim and prove residue
+= 7. Clean up and prove your boundary
 
-Before deletion, inventory objects carrying
-`lab.redhat.com/candidate=virtualization-ai-301`. Uninstall the release and
-remove only resources created for your candidate namespace.
+== Learn
 
-Repeat the labeled inventory. The acceptance result is zero matching
-Deployments, Pods, Services, Routes, NetworkPolicies, ServiceAccounts,
-VirtualMachines, and ServiceMonitors. Preserve the command, timestamp,
-namespace, and empty result.
+You created only local request and evidence files. The VM, adapter, Services,
+NetworkPolicies, presentation, and Showroom are platform-owned lab resources.
+The participant must not uninstall or delete them; Launchpad performs full
+environment reclamation and independently proves zero residue.
 
-Do not delete shared Secrets, operators, CRDs, storage classes, nodes, or
-roadshow resources. Factory source tests do not substitute for this target
-zero-residue receipt.
+== Show
+
+Record the platform-owned resources that Launchpad will reclaim later.
+
+[source,bash,role="execute"]
+----
+oc get vm,vmi,deploy,svc,networkpolicy \
+  -l lab.redhat.com/candidate=virtualization-ai-301 -o name \
+  | tee "$LAB_DIR/platform-owned.txt"
+----
+
+== Do
+
+Stop the local tunnel and remove every learner-created file.
+
+[source,bash,role="execute"]
+----
+if test -f "$LAB_DIR/port-forward.pid"; then
+  kill "$(cat "$LAB_DIR/port-forward.pid")" 2>/dev/null || true
+fi
+rm -f "$LAB_DIR"/*.json "$LAB_DIR"/*.txt "$LAB_DIR"/*.log "$LAB_DIR"/*.pid
+rmdir "$LAB_DIR"
+----
+
+== Prove
+
+[source,bash,role="execute"]
+----
+test ! -e "$LAB_DIR"
+oc auth can-i delete namespaces | grep -qx no
+oc get vm "$VM_NAME" -o name
+oc get deployment virtualization-ai-301-adapter -o name
+----
+
+The first check proves learner artifact cleanup. The final checks prove that
+you did not destroy the platform-owned environment. Full namespace, Route,
+RoleBinding, application, model-key, and identity cleanup is a separate
+Launchpad reclamation gate.

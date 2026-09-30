@@ -1,14 +1,55 @@
-= 4. Compare and allow review
+= 4. Submit the governed review
 
-Run the contract and workload tests, render the chart, then submit the complete
-representative request. In factory mode the expected result is:
+== Do
 
-* outcome `ALLOW_REVIEW`;
-* source state `REHEARSAL`;
-* `ai_participated: false`;
-* reason `CONTROLS_COMPLETE`; and
-* authority `HUMAN_REVIEW_REQUIRED`.
+Send the request to the real adapter running in your seat.
 
-Retrieve the evidence by its identifier and verify the request hash,
-correlation identifier, ordered checks, source state, timestamp, and authority.
-`ALLOW_REVIEW` permits review only; it does not authorize a change.
+[source,bash,role="execute"]
+----
+curl -fsS -X POST "$ADAPTER_URL/api/v1/modernize" \
+  -H 'Content-Type: application/json' \
+  --data-binary @"$LAB_DIR/request.json" \
+  | tee "$LAB_DIR/allow-response.json" | jq .
+----
+
+== Learn
+
+The response must be interpreted with its provenance:
+
+* In `LIVE`, the advisory came from the configured model and both
+  `source_state == "LIVE"` and `ai_participated == true` must be true.
+* In `REHEARSAL`, the advisory is deterministic and both
+  `source_state == "REHEARSAL"` and `ai_participated == false` must be true.
+* `ALLOW_REVIEW` still requires `HUMAN_REVIEW_REQUIRED`; it never authorizes an
+  automated change.
+
+== Prove
+
+Assert the decision, authority, and truthful inference state, then retrieve the
+server-side evidence record.
+
+[source,bash,role="execute"]
+----
+jq -e '
+  .outcome == "ALLOW_REVIEW" and
+  .authority == "HUMAN_REVIEW_REQUIRED" and
+  (
+    (.source_state == "LIVE" and .ai_participated == true and .checks.model == "PASS") or
+    (.source_state == "REHEARSAL" and .ai_participated == false and .checks.model == "NOT_RUN")
+  )
+' "$LAB_DIR/allow-response.json"
+
+export EVIDENCE_ID="$(jq -r .evidence_id "$LAB_DIR/allow-response.json")"
+curl -fsS "$ADAPTER_URL/api/v1/evidence/$EVIDENCE_ID" \
+  | tee "$LAB_DIR/allow-evidence.json" | jq .
+----
+
+[source,bash,role="execute"]
+----
+jq -e --arg id "$EVIDENCE_ID" --arg correlation "$CORRELATION_ID" '
+  .evidence_id == $id and
+  .correlation_id == $correlation and
+  (.request_sha256 | test("^[0-9a-f]{64}$")) and
+  .authority == "HUMAN_REVIEW_REQUIRED"
+' "$LAB_DIR/allow-evidence.json"
+----

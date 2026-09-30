@@ -1,6 +1,17 @@
 = Conclusion
 
-You governed the 201 contract with explicit identity, network, placement,
-observability, refusal, and human-authority evidence. You did not certify the
-candidate. Hand the evidence bundle to Launchpad for independent development-
-cluster execution, measurement, reclaim review, certification, and promotion.
+You followed one VM-to-AI modernization decision from real namespace inventory
+to a governed API response, controlled failures, an evidence receipt, a named
+human decision, and learner cleanup.
+
+You can now explain:
+
+* why identity and network checks run before any model;
+* why missing observations produce `ABSTAIN` rather than a confident answer;
+* how `LIVE` and `REHEARSAL` evidence differ;
+* why `ALLOW_REVIEW` preserves human authority; and
+* which cleanup belongs to the learner versus the Launchpad lifecycle.
+
+This lab produces evidence for further validation. It does not by itself prove
+Intel placement, benchmark performance, certify the catalog item, or approve a
+production modernization.

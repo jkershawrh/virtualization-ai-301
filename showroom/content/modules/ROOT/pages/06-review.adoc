@@ -1,14 +1,59 @@
-= 6. Record human authority
+= 6. Keep the human decision explicit
 
-Name the reviewer. Map each claim to its evidence identifier and record limits:
-platform version, operator version, namespace, labels, source state, model
-identity, hardware identity, and unmeasured behavior.
+== Learn
 
-The reviewer chooses `ACCEPT_FOR_FURTHER_VALIDATION` or `REJECT`. Neither choice
-is Launchpad certification, product support, production approval, or artifact
-promotion. The adapter never writes this decision.
+The adapter produces evidence; it does not approve its own evidence. A named
+reviewer must preserve the source state and limits when deciding whether the
+candidate may continue to deeper validation.
 
-Restart the adapter in the target development environment and repeat one
-allowed plus one refused request. Verify counters reset or resume exactly as
-the approved design states; the reference in-memory adapter intentionally
-resets and makes no durable-state claim.
+== Show
+
+Inspect the bounded decision counters. They count process outcomes only; they
+are not VM, model, capacity, latency, cost, or Intel hardware metrics.
+
+[source,bash,role="execute"]
+----
+curl -fsS "$ADAPTER_URL/metrics" | tee "$LAB_DIR/metrics.txt"
+grep 'virtualization_ai_301_decisions_total' "$LAB_DIR/metrics.txt"
+----
+
+== Do
+
+Create a reviewer-owned decision record. Change `REVIEWER` to your name or lab
+identity if desired.
+
+[source,bash,role="execute"]
+----
+export REVIEWER="${REVIEWER:-lab-participant}"
+jq -n \
+  --arg reviewer "$REVIEWER" \
+  --arg decision "ACCEPT_FOR_FURTHER_VALIDATION" \
+  --arg evidence_id "$EVIDENCE_ID" \
+  --arg source_state "$(jq -r .source_state "$LAB_DIR/allow-response.json")" \
+  --arg recorded_at "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
+  '{
+    reviewer:$reviewer,
+    decision:$decision,
+    evidence_id:$evidence_id,
+    source_state:$source_state,
+    recorded_at:$recorded_at,
+    limits:[
+      "not Launchpad certification",
+      "not production approval",
+      "not performance or capacity proof",
+      "not authority to mutate the VM or cluster"
+    ]
+  }' | tee "$LAB_DIR/human-decision.json" | jq .
+----
+
+== Prove
+
+[source,bash,role="execute"]
+----
+jq -e --arg evidence_id "$EVIDENCE_ID" '
+  .evidence_id == $evidence_id and
+  .reviewer != "" and
+  .decision == "ACCEPT_FOR_FURTHER_VALIDATION" and
+  (.limits | length) == 4
+' "$LAB_DIR/human-decision.json"
+----
