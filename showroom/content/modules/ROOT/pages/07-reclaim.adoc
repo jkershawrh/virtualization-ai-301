@@ -36,7 +36,8 @@ rmdir "$LAB_DIR"
 [source,bash,role="execute"]
 ----
 test ! -e "$LAB_DIR"
-oc auth can-i delete namespaces | grep -qx no
+NAMESPACE_DELETE_ALLOWED="$(oc auth can-i delete namespaces || true)"
+test "$NAMESPACE_DELETE_ALLOWED" = "no"
 oc get vm "$VM_NAME" -o name
 oc get deployment virtualization-ai-301-adapter -o name
 ----
